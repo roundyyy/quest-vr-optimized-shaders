@@ -76,7 +76,6 @@ Shader "Roundy/Vegetation/LeafsWindOnly" {
                 half sine = sin(windTime + vertex.x);
                 return normal * (sine * _WindAmplitude * uv.y);
             }
-
             v2f vert(appdata v) {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
@@ -89,6 +88,8 @@ Shader "Roundy/Vegetation/LeafsWindOnly" {
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.screenPos = ComputeScreenPos(o.pos);
                 
+                // Initialize lightmapUV to zero by default
+                o.lightmapUV = float2(0, 0);
                 #ifdef LIGHTMAP_ON
                     o.lightmapUV = v.lightmapUV * unity_LightmapST.xy + unity_LightmapST.zw;
                 #endif
