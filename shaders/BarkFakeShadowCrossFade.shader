@@ -19,8 +19,8 @@ Shader "Roundy/Vegetation/BarkFakeShadowCrossFade" {
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
             #pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
-            #pragma multi_compile_local * UNITY_SINGLE_PASS_STEREO STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
-            #pragma multi_compile * LOD_FADE_CROSSFADE
+            #pragma multi_compile_local UNITY_SINGLE_PASS_STEREO STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
+            #pragma multi_compile LOD_FADE_CROSSFADE
    
             #include "UnityCG.cginc"
             static const float4x4 bayerMatrix = float4x4(
