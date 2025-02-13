@@ -155,6 +155,8 @@ Shader "Roundy/Vegetation/LeafsWindAmbientColor" {
                     o.viewDir = normalize(UnityWorldSpaceViewDir(o.worldPos));
                 #endif
                 
+                // Initialize lightmapUV to zero by default
+                o.lightmapUV = float2(0, 0);
                 #ifdef LIGHTMAP_ON
                     o.lightmapUV = v.lightmapUV * unity_LightmapST.xy + unity_LightmapST.zw;
                 #endif
