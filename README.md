@@ -5,11 +5,11 @@ Collection of performance-focused vertex/fragment shaders for Meta Quest VR, mob
 ✨ Compatible with:
 - Built-in RP
 - URP
-- HDRP (not sure)
+- HDRP (not tested)
 
 All shaders are written in vert/frag (no compute or surface shaders) for maximum mobile VR performance.
 
-## Shader Gallery
+## Shader Gallery (Not complete)
 
 ### AlphaBlendedEmission
 ![AlphaBlendedEmission](images/AlphaBlendedEmission.png)
