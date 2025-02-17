@@ -3,8 +3,7 @@ Shader "Roundy/UnlitEmissionLightmap" {
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
         _EmissionMap ("Emission Map", 2D) = "black" {}
-        _EmissionColor ("Emission Color", Color) = (0,0,0,1)
-        _EmissionPower ("Emission Power", Range(0,10)) = 1.0
+        [HDR] _EmissionColor ("Emission Color", Color) = (0,0,0,1)
     }
     SubShader {
         Tags {"RenderType"="Opaque"}
@@ -44,11 +43,10 @@ Shader "Roundy/UnlitEmissionLightmap" {
             sampler2D _MainTex;
             float4 _MainTex_ST;
             sampler2D _EmissionMap;
-            float4 _EmissionColor;
-            float _EmissionPower;
+            half4 _EmissionColor;
            
             UNITY_INSTANCING_BUFFER_START(Props)
-                UNITY_DEFINE_INSTANCED_PROP(fixed4, _Color)
+                UNITY_DEFINE_INSTANCED_PROP(half4, _Color)
             UNITY_INSTANCING_BUFFER_END(Props)
    
             v2f vert (appdata v) {
@@ -65,21 +63,21 @@ Shader "Roundy/UnlitEmissionLightmap" {
                 return o;
             }
    
-            fixed4 frag (v2f i) : SV_Target {
+            half4 frag (v2f i) : SV_Target {
                 UNITY_SETUP_INSTANCE_ID(i);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
                
                 // Sample the main texture
-                fixed4 col = tex2D(_MainTex, i.uv) * UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
-                
+                half4 col = tex2D(_MainTex, i.uv) * UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
+               
                 // Apply lightmap before emission for proper HDR behavior
                 #ifdef LIGHTMAP_ON
                 half3 bakedColorTex = DecodeLightmap(UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uv1));
                 col.rgb *= bakedColorTex;
                 #endif
-                
+               
                 // Add emission after lightmap
-                fixed4 emission = tex2D(_EmissionMap, i.uv) * _EmissionColor * _EmissionPower;
+                half4 emission = tex2D(_EmissionMap, i.uv) * _EmissionColor;
                 col.rgb += emission.rgb;
    
                 // Apply fog last
