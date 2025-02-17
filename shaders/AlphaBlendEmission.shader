@@ -1,11 +1,9 @@
-Shader "Roundy/AlphaBlendedEmission"
+Shader "Roundy/AlphaBlendedUnlit"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _TintColor ("Tint Color", Color) = (1,1,1,1)
-        [HDR] _EmissionColor ("Emission Color", Color) = (0,0,0,1)
-        _EmissionPower ("Emission Power", Range(0,10)) = 1.0
+        [HDR] _TintColor ("Tint Color", Color) = (1,1,1,1)
     }
    
     SubShader
@@ -17,7 +15,7 @@ Shader "Roundy/AlphaBlendedEmission"
             "IgnoreProjector"="True"
         }
        
-        ZWrite Off
+        ZWrite On
         Blend SrcAlpha OneMinusSrcAlpha
         Cull Off
        
@@ -48,11 +46,9 @@ Shader "Roundy/AlphaBlendedEmission"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float4 _EmissionColor;
-            float _EmissionPower;
            
             UNITY_INSTANCING_BUFFER_START(Props)
-                UNITY_DEFINE_INSTANCED_PROP(float4, _TintColor)
+                UNITY_DEFINE_INSTANCED_PROP(half4, _TintColor)
             UNITY_INSTANCING_BUFFER_END(Props)
            
             v2f vert (appdata v)
@@ -61,25 +57,21 @@ Shader "Roundy/AlphaBlendedEmission"
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_TRANSFER_INSTANCE_ID(v, o);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-                
+               
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 return o;
             }
            
-            fixed4 frag (v2f i) : SV_Target
+            half4 frag (v2f i) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
-                
+               
                 half4 col = tex2D(_MainTex, i.uv);
                 half4 tint = UNITY_ACCESS_INSTANCED_PROP(Props, _TintColor);
                 
-                // Apply tint and emission
-                col *= tint;
-                col.rgb += _EmissionColor.rgb * _EmissionPower;
-                
-                return col;
+                return col * tint;
             }
             ENDCG
         }
